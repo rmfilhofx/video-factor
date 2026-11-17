@@ -75,7 +75,7 @@ Na Vercel, importe a raiz deste repositório como projeto Next.js. Os comandos d
 
 ### Geração por roteiro ou prompt
 
-Em **Criar vídeo**, escreva até três cenas em linhas separadas. O servidor extrai palavras-chave, consulta a Wikimedia Commons e seleciona até três fotos de domínio público, CC0 ou CC BY com créditos. O MP4 H.264 tem títulos, zoom, cortes e atribuição. Cada foto tem um link para sua ficha na página do resultado, e as fontes também ficam nos metadados do MP4. O recurso usa busca por palavras-chave, sem depender de uma chave de IA ou de um banco de mídia pago.
+Em **Criar vídeo**, escreva até três cenas em linhas separadas. O servidor aceita temas livres, extrai palavras-chave, consulta a Wikimedia Commons e seleciona até três fotos de domínio público, CC0 ou CC BY com créditos. Se uma cena ficar sem resultado utilizável, usa uma fotografia abstrata de domínio público com indicação de fundo ilustrativo. O MP4 H.264 tem títulos, zoom, cortes e atribuição. Cada foto tem um link para sua ficha na página do resultado, e as fontes também ficam nos metadados do MP4. O recurso usa busca por palavras-chave, sem depender de uma chave de IA ou de um banco de mídia pago.
 
 O site oferece 9:16, 16:9 e 1:1 a 24 fps, com 15, 20, 30 ou 60 segundos, quatro estilos e download. O histórico armazena até oito vídeos no IndexedDB deste navegador. O gerador produz vídeos sem áudio. Os presets e o renderizador Remotion existentes continuam disponíveis para edição e renders independentes.
 

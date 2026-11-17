@@ -12,7 +12,7 @@ type SearchResult = {
   imageinfo?: {thumburl?: string; descriptionurl?: string; extmetadata?: Metadata}[];
 };
 
-export type Credit = {title: string; author: string; license: string; source: string};
+export type Credit = {title: string; author: string; license: string; source: string; illustrative?: boolean};
 type Photo = Credit & {url: string};
 
 function plain(value: string, max: number) {

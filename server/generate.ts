@@ -16,20 +16,24 @@ const styles = {
 } as const;
 
 export const generationSchema = z.object({
-  prompt: z.string().trim().min(8).max(750),
+  prompt: z.string().trim().min(1).max(750),
   format: z.enum(['9:16', '16:9', '1:1']),
   seconds: z.union([z.literal(15), z.literal(20), z.literal(30), z.literal(60)]),
   style: z.enum(['Cinematográfico', 'Minimalista', 'Editorial', 'Neon']),
 });
 
 type Generation = z.infer<typeof generationSchema>;
-const ignored = new Set('crie criar faça gerar gere quero vídeo video cinematico cinematográfico sobre uma um dos das para com the and make about imagens fotos mostrando mostrando estilo segundos imagem foto'.split(' '));
+const ignored = new Set('crie criar faça gerar gere quero vídeo video cinematico cinematográfico sobre uma um dos das para com the and make about imagens fotos mostrando mostrando estilo segundos imagem foto meus meu minha seu seja faça usando use criar suas this that for your with from into faça texto produza animação de do da ao um uma o a as os e'.split(' '));
 const translation: Record<string, string> = {
   praia: 'beach', praias: 'beach', cidade: 'city', urbana: 'urban', floresta: 'forest',
   montanha: 'mountain', montanhas: 'mountain', mar: 'ocean', oceano: 'ocean',
   noite: 'night', noturna: 'night', carros: 'cars', carro: 'car', natureza: 'nature',
   deserto: 'desert', pôr: 'sunset', cachoeira: 'waterfall', animais: 'animals', gatos: 'cats',
-  viagem: 'travel', chuva: 'rain', neve: 'snow', espaço: 'space', futebol: 'football',
+  viagem: 'travel', chuva: 'rain', neve: 'snow', espaço: 'space', futebol: 'football', café: 'coffee', culinária: 'cooking', receita: 'cooking',
+  cozinha: 'kitchen', produto: 'product', produtos: 'products', loja: 'shop', negócio: 'business',
+  tecnologia: 'technology', robôs: 'robots', ciência: 'science', educação: 'education',
+  música: 'music', dança: 'dance', esporte: 'sport', corrida: 'running', cachorro: 'dog',
+  fazenda: 'farm', comida: 'food', livro: 'book', moda: 'fashion', casamento: 'wedding',
 };
 
 function terms(text: string) {
@@ -52,46 +56,63 @@ function wrap(text: string, width: number, maxLines: number) {
   return lines.join('\n');
 }
 
-export class NoPhotosError extends Error {}
+const fallbackCredit: Credit = {
+  title: 'Ripples in Calm Water at Lake Mead',
+  author: 'Andrew Cattoir (Lake Mead National Recreation Area)',
+  license: 'Public domain',
+  source: 'https://commons.wikimedia.org/wiki/File:Ripples_in_Calm_Water_at_Lake_Mead_(e082fea3-1c90-4bf1-b543-00d8348e5c69).jpg',
+  illustrative: true,
+};
+
+async function findPhotos(caption: string) {
+  const query = terms(caption);
+  if (!query) return [];
+
+  const words = query.split(' ');
+  const broader = words.slice(0, 2).join(' ');
+  const [exact, broad] = await Promise.all([
+    photosFor(query).catch(() => []),
+    broader === query ? Promise.resolve([]) : photosFor(broader).catch(() => []),
+  ]);
+  return [...new Map([...exact, ...broad].map((photo) => [photo.url, photo])).values()];
+}
 
 export async function generateVideo(input: Generation, dir: string, signal: AbortSignal) {
   const [width, height] = formats[input.format];
   const style = styles[input.style];
   const captions = input.prompt.split(/\n+|(?<=[.!?])\s+/u).map((line) => line.trim()).filter(Boolean).slice(0, 3);
-  const queries = [...new Set([...captions.map(terms), terms(input.prompt)].filter(Boolean))];
-  if (queries.length === 0) throw new NoPhotosError('Inclua um tema ou local para buscar fotos.');
-  const results = await Promise.allSettled(queries.map(photosFor));
-  if (results.every((result) => result.status === 'rejected')) throw results[0].reason;
-  const matches = results.map((result) => result.status === 'fulfilled' ? result.value : []);
-  const attempts = Array.from({length: 8}, (_, rank) => matches.flatMap((photos, series) => {
-    const photo = photos[rank];
-    return photo ? [{photo, series}] : [];
-  })).flat();
-  const seen = new Set<string>();
-  const unique = attempts.filter(({photo}) => {
-    if (seen.has(photo.url)) return false;
-    seen.add(photo.url);
-    return true;
-  }).slice(0, 8);
+  const matches = await Promise.all(captions.map(findPhotos));
+  const descriptions = captions.length === 1 && matches[0].length >= 3
+    ? [captions[0], captions[0], captions[0]]
+    : captions;
   const credits: Credit[] = [];
-  const descriptions: string[] = [];
-  for (const {photo, series} of unique) {
-    signal.throwIfAborted();
-    if (credits.length === 3) break;
-    try {
-      const bytes = await downloadPhoto(photo.url);
-      await sharp(bytes, {limitInputPixels: 16_000_000}).rotate()
-        .resize(width, height, {fit: 'cover', position: 'attention'})
-        .jpeg({quality: 88}).toFile(join(dir, `scene-${credits.length}.jpg`));
-    } catch {
-      continue;
-    }
-    const {url: _url, ...credit} = photo;
-    credits.push(credit);
-    descriptions.push(captions.find((line) => terms(line) === queries[series]) ?? captions[0]);
+  const used = new Set<string>();
+
+  async function preparePhoto(input: string | Buffer, index: number) {
+    await sharp(input, {limitInputPixels: 16_000_000}).rotate()
+      .resize(width, height, {fit: 'cover', position: 'attention'})
+      .jpeg({quality: 88}).toFile(join(dir, `scene-${index}.jpg`));
   }
-  if (!credits.length) {
-    throw new NoPhotosError('Sem fotos adequadas com licença compatível. Tente um tema mais específico, como “praias de Miami” ou “montanhas dos Alpes”.');
+
+  for (let index = 0; index < descriptions.length; index++) {
+    signal.throwIfAborted();
+    const candidates = (matches[captions.length === 1 ? 0 : index] ?? [])
+      .filter((photo) => !used.has(photo.url)).slice(0, 2);
+    let credit = fallbackCredit;
+    for (const {url, ...candidate} of candidates) {
+      try {
+        await preparePhoto(await downloadPhoto(url), index);
+        used.add(url);
+        credit = candidate;
+        break;
+      } catch {
+        signal.throwIfAborted();
+      }
+    }
+    if (credit.illustrative) {
+      await preparePhoto(join(process.cwd(), 'server/media/lake-mead.jpg'), index);
+    }
+    credits.push(credit);
   }
 
   const fps = 24;
@@ -109,7 +130,7 @@ export async function generateVideo(input: Generation, dir: string, signal: Abor
     const frameCount = Math.floor(frames * (i + 1) / count) - Math.floor(frames * i / count);
     const caption = wrap(descriptions[i], 28, 3);
     await writeFile(join(dir, `title-${i}.txt`), caption);
-    await writeFile(join(dir, `credit-${i}.txt`), wrap(`${credit.author} · ${credit.license} · Wikimedia Commons`, 51, 3));
+    await writeFile(join(dir, `credit-${i}.txt`), wrap(`${credit.illustrative ? "Foto ilustrativa · " : ""}${credit.author} · ${credit.license} · Wikimedia Commons`, 51, 3));
     args.push('-i', `scene-${i}.jpg`);
     const pad = Math.round(width * 0.055);
     filters.push(
@@ -130,5 +151,5 @@ export async function generateVideo(input: Generation, dir: string, signal: Abor
   {cwd: dir, timeout: 95_000, signal});
   const file = await readFile(join(dir, output));
   if (file.length > 4_300_000) throw new Error('O MP4 ficou acima do limite. Selecione uma duração menor.');
-  return {file, credits};
+  return {file, credits: [...new Map(credits.map((credit) => [credit.source, credit])).values()]};
 }

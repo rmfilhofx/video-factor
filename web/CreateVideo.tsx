@@ -28,6 +28,9 @@ function Result({item}: {item: Generated}) {
           <ArrowDownToLine size={17} /> Baixar MP4
         </a>
       </>}
+      {item.credits.some((credit) => credit.illustrative) && (
+        <p>O banco não encontrou uma foto adequada para uma ou mais cenas. Essas cenas usam um fundo fotográfico ilustrativo.</p>
+      )}
       <h3>Créditos das fotos</h3>
       <ul>
         {item.credits.map((credit) => (
@@ -66,8 +69,8 @@ export function CreateVideo() {
     const format = String(values.get('format'));
     const seconds = Number(values.get('seconds'));
     setError('');
-    if (prompt.length < 8) {
-      setError('Informe um tema ou roteiro com pelo menos 8 caracteres.');
+    if (!prompt) {
+      setError('Escreva um tema ou roteiro.');
       return;
     }
     setBusy(true);
@@ -101,11 +104,11 @@ export function CreateVideo() {
       <div className="creation-grid">
         <section className="creation-panel" aria-labelledby="project-title">
           <h2 id="project-title">Novo vídeo</h2>
-          <p className="notice">Fotografias da Wikimedia Commons. Separe as cenas por linha e use temas concretos.</p>
+          <p className="notice">Escreva sobre o tema que quiser. Para organizar o vídeo, separe até três cenas por linha.</p>
           <form className="creation-fields" onSubmit={submit} aria-busy={busy}>
             <label>Roteiro ou prompt
-              <textarea name="prompt" rows={5} required minLength={8} maxLength={750}
-                placeholder={'Praias de Miami ao pôr do sol\nCidade de Miami à noite'} />
+              <textarea name="prompt" rows={5} required maxLength={750}
+                placeholder={'O que você quer mostrar?\nEx.: um café artesanal, uma viagem ou um produto novo'} />
             </label>
             <div className="select-grid">
               <label>Formato<select name="format" defaultValue="9:16"><option>9:16</option><option>16:9</option><option>1:1</option></select></label>

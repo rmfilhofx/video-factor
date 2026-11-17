@@ -1,7 +1,7 @@
 import {mkdtemp, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {generateVideo, generationSchema, NoPhotosError} from '../../../server/generate';
+import {generateVideo, generationSchema} from '../../../server/generate';
 
 export const runtime = 'nodejs';
 export const maxDuration = 180;
@@ -27,7 +27,6 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    if (error instanceof NoPhotosError) return Response.json({error: error.message}, {status: 422});
     console.error('Falha na geração', error);
     return Response.json({error: 'Não foi possível concluir a geração. Tente novamente.'}, {status: 502});
   } finally {
