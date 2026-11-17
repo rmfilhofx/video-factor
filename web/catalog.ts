@@ -23,6 +23,30 @@ export const videos = [
     audio: 'Sem áudio',
     remotion: false,
   },
+  {
+    id: 'trading-stop-editorial',
+    title: 'Levou stop? — Editorial',
+    category: 'Trading',
+    description: 'Clipes de mercado, títulos em destaque e narração sobre como lidar com o impulso depois de um stop.',
+    file: 'TradingStop-Editorial.mp4',
+    poster: 'trading-stop-editorial.jpg',
+    seconds: 19,
+    size: '7,2 MB',
+    audio: 'Narração sintetizada em português',
+    remotion: false,
+  },
+  {
+    id: 'trading-stop',
+    title: 'Levou stop? — Gráfico animado',
+    category: 'Trading',
+    description: 'A versão com gráfico ilustrativo, legendas e waveform sincronizada com a narração.',
+    file: 'TradingStop.mp4',
+    poster: 'trading-stop.jpg',
+    seconds: 19,
+    size: '5,5 MB',
+    audio: 'Narração sintetizada em português',
+    remotion: false,
+  },
 ] as const;
 
 export type VideoEntry = (typeof videos)[number];
