@@ -1,11 +1,16 @@
 'use client';
 
 import {ArrowDownToLine, History, LoaderCircle, Sparkles} from 'lucide-react';
-import {useEffect, useState, type FormEvent} from 'react';
+import {useEffect, useRef, useState, type FormEvent} from 'react';
 import {readHistory, saveVideo, type Generated} from './generated-history';
 
 function Result({item}: {item: Generated}) {
   const [url, setUrl] = useState('');
+  const heading = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    heading.current?.focus();
+  }, []);
 
   useEffect(() => {
     const next = URL.createObjectURL(item.file);
@@ -15,7 +20,7 @@ function Result({item}: {item: Generated}) {
 
   return (
     <section className="creation-panel generated-result" aria-labelledby="generated-title">
-      <h2 id="generated-title">Vídeo pronto</h2>
+      <h2 id="generated-title" ref={heading} tabIndex={-1}>Vídeo pronto</h2>
       <p>{item.format} · {item.seconds} segundos · MP4</p>
       {url && <>
         <video src={url} controls playsInline preload="metadata" aria-label={item.label} />

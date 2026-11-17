@@ -33,7 +33,7 @@ const translation: Record<string, string> = {
 };
 
 function terms(text: string) {
-  return (text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [])
+  return (text.toLowerCase().replace(/p[oô]r do sol/gu, 'sunset').match(/[\p{L}\p{N}]+/gu) ?? [])
     .filter((word) => word.length >= 3 && !ignored.has(word))
     .slice(0, 4).map((word) => translation[word] ?? word).join(' ');
 }
