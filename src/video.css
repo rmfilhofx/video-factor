@@ -1,0 +1,81 @@
+.scene {
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff6ee;
+  background: #0b091b;
+}
+.backdrop {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.film-frame {
+  margin: 42px;
+  border: 1px solid #fff2db42;
+  background: repeating-linear-gradient(0deg, transparent 0 3px, #0b091b13 4px 5px);
+}
+.slate, .eyebrow, .art-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  font-size: 22px;
+}
+.slate {
+  position: absolute;
+  left: 90px;
+  right: 140px;
+  top: 133px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand, .segments {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand i {
+  width: 12px;
+  height: 12px;
+  transform: rotate(45deg);
+}
+.titles {
+  position: absolute;
+  left: 88px;
+  width: 845px;
+}
+.eyebrow {
+  margin-bottom: 33px;
+}
+.title-line {
+  font: 800 140px / 0.86 'Barlow Condensed', sans-serif;
+  letter-spacing: -0.022em;
+  text-transform: uppercase;
+  transform-origin: left center;
+  overflow-wrap: anywhere;
+  margin-bottom: 12px;
+  text-shadow: 0 8px 45px #080313a8;
+}
+.rule {
+  height: 5px;
+  margin-top: 36px;
+}
+.art-label {
+  position: absolute;
+  left: 90px;
+  bottom: 292px;
+  opacity: 0.72;
+  font-size: 20px;
+}
+.footer {
+  top: auto;
+  bottom: 227px;
+}
+.segments {
+  max-width: 60%;
+  gap: 9px;
+}
+.segments i {
+  width: 39px;
+  height: 4px;
+}

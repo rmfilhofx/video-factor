@@ -1,0 +1,6 @@
+{
+  "jobs": [
+    {"preset":"gta6-promo.json","output":"../out/GTA6Promo.mp4"},
+    {"preset":"teaser-curto.json","output":"../out/TeaserCurto.mp4"}
+  ]
+}

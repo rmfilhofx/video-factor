@@ -1,0 +1,40 @@
+{
+  "name": "video-factory",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "node scripts/render.mjs",
+    "batch": "node scripts/render.mjs --batch",
+    "check": "tsc --noEmit && node --disable-warning=ExperimentalWarning --test tests/*.test.mjs",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@fontsource/barlow-condensed": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@remotion/bundler": "4.0.544",
+    "@remotion/cli": "4.0.544",
+    "@remotion/player": "4.0.544",
+    "@remotion/renderer": "4.0.544",
+    "@tailwindcss/postcss": "4.3.5",
+    "lucide-react": "1.74.0",
+    "next": "16.4.6",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.544",
+    "tailwindcss": "4.3.5",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5.9"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

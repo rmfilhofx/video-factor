@@ -1,0 +1,11 @@
+{
+  "branding":{"name":"VIDEO FACTORY","label":"PROMO DE LIVE"},
+  "scenes": [
+    {"lines":["A ESPERA","ESTÁ","ACABANDO"],"durationInFrames":120,"animation":"rise","palette":"dusk","eyebrow":"O SILÊNCIO ANTES DO CAOS"},
+    {"lines":["GTA 6","ESTÁ","CHEGANDO"],"durationInFrames":120,"animation":"impact","palette":"heat","eyebrow":"A CONTAGEM REGRESSIVA COMEÇOU"},
+    {"lines":["UMA NOVA","HISTÓRIA","COMEÇA"],"durationInFrames":150,"animation":"slide","palette":"violet","eyebrow":"UM NOVO CAPÍTULO"},
+    {"lines":["VOU","TRANSMITIR","TUDO AO VIVO"],"durationInFrames":120,"animation":"rise","palette":"signal","eyebrow":"●  LIVE"},
+    {"lines":["SIGA O PERFIL","E NÃO","PERCA"],"durationInFrames":90,"animation":"impact","palette":"heat","eyebrow":"ATIVE AS NOTIFICAÇÕES"}
+  ],
+  "audio":{"cue":"original-cue.wav","bed":"original-bed.wav","volume":0.65}
+}

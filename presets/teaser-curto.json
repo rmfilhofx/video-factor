@@ -1,0 +1,6 @@
+{
+  "scenes": [
+    {"lines":["MODO","AO VIVO"],"durationInFrames":60,"animation":"fade","palette":"signal"},
+    {"lines":["SIGA O PERFIL"],"durationInFrames":60,"animation":"slide","palette":"violet"}
+  ]
+}
