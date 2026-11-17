@@ -73,6 +73,10 @@ npm start
 
 Na Vercel, importe a raiz deste repositório como projeto Next.js. Os comandos de instalação e build estão em `vercel.json`. Esta versão funciona sem variáveis de ambiente. Os MP4 são estáticos, com suporte a requisições de intervalo para reprodução e cabeçalho de download quando solicitado. A mídia inicial fica no próprio repositório. Para uma biblioteca grande, migre o catálogo para armazenamento de objetos que suporte streaming por intervalo e download.
 
-### Geração por prompt
+### Geração por roteiro ou prompt
 
-A área Criar vídeo aceita os parâmetros no formulário, mantém o botão de geração desativado e mostra o estado do serviço. Para ativá-la, implemente um endpoint autenticado que converta o prompt em um preset validado e crie um job. Processe os jobs em um worker de Remotion com navegador e FFmpeg. Para oferecer 16:9 e 1:1, estenda também o metadado e verifique os layouts nessas proporções. Persista o histórico e os status dos jobs, envie as saídas para armazenamento de objetos e habilite a submissão quando o backend estiver operacional.
+Em **Criar vídeo**, escreva até três cenas em linhas separadas. O servidor extrai palavras-chave, consulta a Wikimedia Commons e seleciona até três fotos de domínio público, CC0 ou CC BY com créditos. O MP4 H.264 tem títulos, zoom, cortes e atribuição. Cada foto tem um link para sua ficha na página do resultado, e as fontes também ficam nos metadados do MP4. O recurso usa busca por palavras-chave, sem depender de uma chave de IA ou de um banco de mídia pago.
+
+O site oferece 9:16, 16:9 e 1:1 a 24 fps, com 15, 20, 30 ou 60 segundos, quatro estilos e download. O histórico armazena até oito vídeos no IndexedDB deste navegador. O gerador produz vídeos sem áudio. Os presets e o renderizador Remotion existentes continuam disponíveis para edição e renders independentes.
+
+A função Node da Vercel empacota o FFmpeg para Linux x64 e o arquivo de fonte. Em outros sistemas, instale `ffmpeg` no PATH. O servidor limita a saída a 4,3 MB por causa do limite de resposta da plataforma. A disponibilidade de fotos depende dos resultados e licenças retornados pela Wikimedia Commons. Em um ambiente local com proxy HTTP obrigatório, inicialize com `NODE_USE_ENV_PROXY=1 npm start`.

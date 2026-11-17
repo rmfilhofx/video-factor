@@ -110,3 +110,20 @@ button:not(:disabled), a { cursor: pointer; }
 @media (max-width: 420px) {
   .select-grid { grid-template-columns: 1fr; }
 }
+
+.creation-fields [role="status"] { color: var(--muted); font-size: .88rem; }
+.generation-error { color: #ffb0bf; font-size: .88rem; }
+.generated-history { @apply mt-4 grid gap-2; }
+.generated-history button {
+  @apply grid w-full gap-1 rounded-lg px-3 py-2 text-left text-sm;
+  overflow-wrap: anywhere; background: #211a35;
+}
+.generated-history button[aria-pressed="true"] { box-shadow: inset 2px 0 var(--accent); }
+.generated-history button span { color: var(--muted); font-size: .78rem; }
+.generated-result { @apply mt-4 grid gap-3; }
+.generated-result > p, .generated-result li span { color: var(--muted); font-size: .88rem; }
+.generated-result video { width: min(100%, 520px); max-height: 60vh; border-radius: 12px; background: #07050e; }
+.generated-result h3 { @apply mt-3 font-bold; }
+.generated-result ul { @apply grid gap-2; }
+.generated-result li { @apply grid gap-1; overflow-wrap: anywhere; }
+.generated-result li a { @apply underline; color: var(--accent); }

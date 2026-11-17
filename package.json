@@ -25,6 +25,7 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "remotion": "4.0.544",
+    "sharp": "0.35.5",
     "tailwindcss": "4.3.5",
     "zod": "4.6.7"
   },
@@ -36,5 +37,8 @@
   },
   "engines": {
     "node": ">=22.18.0"
+  },
+  "optionalDependencies": {
+    "@ffmpeg-installer/linux-x64": "4.1.0"
   }
 }
