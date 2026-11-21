@@ -128,3 +128,26 @@ button:not(:disabled), a { cursor: pointer; }
 .generated-result ul { @apply grid gap-2; }
 .generated-result li { @apply grid gap-1; overflow-wrap: anywhere; }
 .generated-result li a { @apply underline; color: var(--accent); }
+
+
+/* Clip Factory */
+.clip-mode-tabs {display:flex;gap:8px;margin:0 0 22px;flex-wrap:wrap}
+.clip-mode-tabs button {display:inline-flex;align-items:center;gap:9px;padding:12px 18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--muted);font-weight:700}
+.clip-mode-tabs button[aria-selected="true"] {background:#302043;border-color:#9666e5;color:white}
+.clip-layout {display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,0.8fr);gap:18px}
+.clip-hidden-input {display:none}
+.clip-upload {display:flex;width:100%;flex-direction:column;align-items:center;gap:9px;margin:20px 0;padding:35px 16px;border:1px dashed #7959a7;border-radius:16px;background:#1b1529;color:#eee5ff;text-align:center}
+.clip-upload span,.clip-help {font-size:12px;line-height:1.6;color:var(--muted)}
+.clip-source video {display:block;width:100%;max-height:350px;margin:12px auto;border-radius:12px;background:#050409}
+.clip-controls {display:flex;justify-content:space-between;align-items:center;margin:10px 0 24px;font-size:12px;color:var(--muted)}
+.clip-controls button {display:flex;align-items:center;gap:7px;color:white}
+.clip-range {display:grid;gap:16px;margin-top:20px}
+.clip-range label,.clip-settings label {display:grid;gap:9px;font-size:13px;font-weight:700}
+.clip-range input {width:100%;accent-color:#b59aff}
+.clip-settings {display:flex;flex-direction:column;gap:20px}
+.clip-settings input,.clip-settings select {width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;padding:12px;background:#0c0a12;color:white;font-weight:400}
+.clip-summary {display:flex;gap:9px;align-items:flex-start;padding:14px;border-radius:12px;background:#251c35;color:#d9c8ff;font-size:12px;line-height:1.5}
+.clip-notice {display:flex;flex-direction:column;align-items:flex-start;gap:15px;max-width:720px}
+.clip-notice p {color:var(--muted);line-height:1.6}
+@media(max-width:900px) {.clip-layout {grid-template-columns:1fr}}
+@media(max-width:680px) {.sidebar {position:static;width:100%;height:auto;padding:14px}.sidebar nav {display:flex;flex-wrap:wrap;margin-top:14px}.sidebar-footer {display:none}.workspace {margin-left:0;padding:24px 16px}.page-heading {align-items:flex-start}}
