@@ -25,12 +25,17 @@ export default function ClipsPage() {
   const [playing, setPlaying] = useState(false);
   const video = useRef<HTMLVideoElement>(null);
   const input = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<File | null>(null);
+  const [rendering, setRendering] = useState(false);
+  const [renderError, setRenderError] = useState('');
 
   useEffect(() => () => { if (videoUrl) URL.revokeObjectURL(videoUrl); }, [videoUrl]);
 
   function upload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file || !file.type.startsWith('video/')) return;
+    fileRef.current = file;
+    setRenderError('');
     setVideoUrl(URL.createObjectURL(file));
     setFilename(file.name);
     setDuration(0);
@@ -41,6 +46,26 @@ export default function ClipsPage() {
 
   function seek(time: number) {
     if (video.current) video.current.currentTime = time;
+  }
+
+  async function renderClip() {
+    if (!fileRef.current || rendering || end <= start) return;
+    setRendering(true);
+    setRenderError('');
+    try {
+      const form = new FormData();
+      form.set('video', fileRef.current);
+      form.set('settings', JSON.stringify({startSeconds: start, endSeconds: end, cameraPosition, cameraSize, hook, hookDuration, cta}));
+      const response = await fetch('/api/clips/render', {method: 'POST', body: form});
+      if (!response.ok) { const data = await response.json().catch(() => ({})); throw new Error(data.error || 'Falha na renderização.'); }
+      const url = URL.createObjectURL(await response.blob());
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'clip-factory.mp4';
+      anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (error) {setRenderError(error instanceof Error ? error.message : 'Falha inesperada.');}
+    finally {setRendering(false);}
   }
 
   function saveSettings() {
@@ -85,8 +110,10 @@ export default function ClipsPage() {
             <label>Tamanho da webcam<select value={cameraSize} onChange={event => setCameraSize(event.target.value)}><option value="small">Pequena — preserva nitidez</option><option value="medium">Média</option></select></label>
             <label>Chamada final<input value={cta} onChange={event => setCta(event.target.value)} maxLength={120}/></label>
             <div className="clip-summary"><Film size={18}/><span>1080 × 1920 · 30 FPS · Imagem do próprio gameplay · CTA de 3 segundos</span></div>
-            <button type="button" className="primary-button" onClick={saveSettings} disabled={!videoUrl || end <= start}>Salvar configuração do corte</button>
-            <p className="clip-help">Esta primeira versão permite selecionar e configurar o corte. A exportação MP4 e a renderização na nuvem serão conectadas na próxima etapa; salvar a configuração ainda não gera vídeo.</p>
+            <button type="button" className="primary-button" onClick={renderClip} disabled={!videoUrl || end <= start || rendering}>{rendering ? "Gerando MP4..." : "Gerar corte MP4"}</button>
+            {renderError && <p role="alert" className="clip-help">{renderError}</p>}
+            <button type="button" onClick={saveSettings} disabled={!videoUrl || end <= start}>Salvar configuração JSON</button>
+            <p className="clip-help">Renderização experimental na Vercel: arquivos de até 3,5 MB, cortes de até 45 segundos. Para lives completas precisaremos de armazenamento e worker dedicado.</p>
           </section>
         </div>
       )}
