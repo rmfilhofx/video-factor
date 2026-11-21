@@ -46,7 +46,9 @@ export async function POST(request: Request) {
   const video = form?.get('video');
   const raw = form?.get('settings');
   if (!(video instanceof File) || video.size > maxUpload || video.size === 0 || typeof raw !== 'string') return Response.json({error: 'Envie um vídeo válido e as configurações.'}, {status: 400});
-  const parsed = schema.safeParse(JSON.parse(raw));
+  let settings: unknown;
+  try {settings = JSON.parse(raw);} catch {return Response.json({error: 'Configuração JSON inválida.'}, {status: 400});}
+  const parsed = schema.safeParse(settings);
   if (!parsed.success) return Response.json({error: 'Configurações de corte inválidas.'}, {status: 400});
   const opts = parsed.data;
   const dir = await mkdtemp(join(tmpdir(), 'clip-factory-'));
