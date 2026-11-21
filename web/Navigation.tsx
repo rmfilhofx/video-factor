@@ -1,6 +1,6 @@
 'use client';
 
-import {Clapperboard, GalleryVerticalEnd, LayoutDashboard, Sparkles} from 'lucide-react';
+import {Clapperboard, GalleryVerticalEnd, LayoutDashboard, Scissors, Sparkles} from 'lucide-react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
@@ -8,6 +8,7 @@ const routes = [
   {href: '/', label: 'Dashboard', icon: LayoutDashboard},
   {href: '/biblioteca', label: 'Biblioteca', icon: GalleryVerticalEnd},
   {href: '/criar', label: 'Criar vídeo', icon: Sparkles},
+  {href: '/clips', label: 'Clip Factory', icon: Scissors},
 ];
 
 export function Navigation() {
