@@ -50,6 +50,10 @@ export default function ClipsPage() {
 
   async function renderClip() {
     if (!fileRef.current || rendering || end <= start) return;
+    if (fileRef.current.size > 3_500_000) {
+      setRenderError(`Este vídeo tem ${(fileRef.current.size / 1_000_000).toFixed(1)} MB. O renderizador experimental aceita até 3,5 MB. Para vídeos maiores precisamos conectar o armazenamento e o worker de vídeo na nuvem; seu arquivo não foi enviado.`);
+      return;
+    }
     setRendering(true);
     setRenderError('');
     try {
@@ -57,7 +61,7 @@ export default function ClipsPage() {
       form.set('video', fileRef.current);
       form.set('settings', JSON.stringify({startSeconds: start, endSeconds: end, cameraPosition, cameraSize, hook, hookDuration, cta}));
       const response = await fetch('/api/clips/render', {method: 'POST', body: form});
-      if (!response.ok) { const data = await response.json().catch(() => ({})); throw new Error(data.error || 'Falha na renderização.'); }
+      if (!response.ok) { const data = await response.json().catch(() => ({})); throw new Error(data.error || `Falha HTTP ${response.status}. Verifique o limite de tamanho e a configuração do servidor.`); }
       const url = URL.createObjectURL(await response.blob());
       const anchor = document.createElement('a');
       anchor.href = url;
@@ -113,7 +117,7 @@ export default function ClipsPage() {
             <button type="button" className="primary-button" onClick={renderClip} disabled={!videoUrl || end <= start || rendering}>{rendering ? "Gerando MP4..." : "Gerar corte MP4"}</button>
             {renderError && <p role="alert" className="clip-help">{renderError}</p>}
             <button type="button" onClick={saveSettings} disabled={!videoUrl || end <= start}>Salvar configuração JSON</button>
-            <p className="clip-help">Renderização experimental na Vercel: arquivos de até 3,5 MB, cortes de até 45 segundos. Para lives completas precisaremos de armazenamento e worker dedicado.</p>
+            <p className="clip-help">Renderização experimental na Vercel: arquivos de até 3,5 MB, cortes de até 45 segundos. Arquivos maiores são bloqueados antes do envio, com uma explicação. Para lives completas precisaremos de armazenamento e worker dedicado.</p>
           </section>
         </div>
       )}
